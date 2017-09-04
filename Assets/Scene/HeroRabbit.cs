@@ -15,12 +15,13 @@ public class HeroRabbit : MonoBehaviour {
 		
 	}
 	void FixedUpdate (){
-		float value = Input.GetAxis ("Horisontal");
+		float value = Input.GetAxis ("Horizontal");
 		if (Mathf.Abs (value) > 0) {
 			Vector2 vel = myBody.velocity;
 			vel.x = value * speed;
 			myBody.velocity = vel;
 		}
+
 		SpriteRenderer sr = GetComponent<SpriteRenderer> ();
 		if (value < 0) {
 			sr.flipX = true;
