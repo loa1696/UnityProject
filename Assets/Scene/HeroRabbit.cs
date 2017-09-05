@@ -14,11 +14,18 @@ public class HeroRabbit : MonoBehaviour {
 	void Update () {
 		
 	}
+
 	void FixedUpdate (){
 		float value = Input.GetAxis ("Horizontal");
 		if (Mathf.Abs (value) > 0) {
 			Vector2 vel = myBody.velocity;
 			vel.x = value * speed;
+			myBody.velocity = vel;
+		}
+		float value1 = Input.GetAxis ("Vertical");
+		if (Mathf.Abs (value1) > 0) {
+			Vector2 vel = myBody.velocity;
+			vel.y = value1 * speed;
 			myBody.velocity = vel;
 		}
 
