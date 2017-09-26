@@ -4,10 +4,20 @@ using UnityEngine;
 
 public class HeroRabbit : MonoBehaviour {
 	public float speed = 1;
+
+	bool isGrounded = false;
+	bool JumpActive = false;
+	float JumpTime = 0f;
+	public float MaxJumpTime = 2f;
+	public float JumpSpeed = 2f;
 	Rigidbody2D myBody = null;
 	// Use this for initialization
 	void Start () {
+		
 		myBody = this.GetComponent<Rigidbody2D> (); 
+		//class HeroRabit, void Start()
+		//Зберігаємо позицію кролика на початку
+		LevelController.current.setStartPosition (transform.position);
 	}
 	
 	// Update is called once per frame
@@ -22,12 +32,7 @@ public class HeroRabbit : MonoBehaviour {
 			vel.x = value * speed;
 			myBody.velocity = vel;
 		}
-		float value1 = Input.GetAxis ("Vertical");
-		if (Mathf.Abs (value1) > 0) {
-			Vector2 vel = myBody.velocity;
-			vel.y = value1 * speed;
-			myBody.velocity = vel;
-		}
+
 
 		SpriteRenderer sr = GetComponent<SpriteRenderer> ();
 		if (value < 0) {
@@ -36,5 +41,56 @@ public class HeroRabbit : MonoBehaviour {
 			sr.flipX = false;
 		}
 
+
+	
+		Animator animator = GetComponent<Animator> ();
+		if(Mathf.Abs(value) > 0) {
+			animator.SetBool ("run", true);
+		} else {
+			animator.SetBool ("run", false);
+		}
+
+		//class HeroRabit, void FixedUpdate()
+		Vector3 from = transform.position + Vector3.up * 0.3f;
+		Vector3 to = transform.position + Vector3.down * 0.1f;
+		int layer_id = 1 << LayerMask.NameToLayer ("Ground");
+		//Перевіряємо чи проходить лінія через Collider з шаром Ground
+		RaycastHit2D hit = Physics2D.Linecast(from, to, layer_id);
+		if(hit) {
+			isGrounded = true;
+		} else {
+			isGrounded = false;
+		}
+		//Намалювати лінію (для розробника)
+		Debug.DrawLine (from, to, Color.red);
+
+		//HeroRabit::FixedUpdate
+		//Якщо кнопка тільки що натислась
+		if(Input.GetAxis ("Vertical")>0&& isGrounded) {
+			this.JumpActive = true;
+		}
+		if (this.JumpActive) {
+			//Якщо кнопку ще тримають
+			if (Input.GetAxis ("Vertical")>0
+				) {
+				this.JumpTime += Time.deltaTime;
+				if (this.JumpTime < this.MaxJumpTime) {
+					Vector2 vel = myBody.velocity;
+					vel.y = JumpSpeed * (1.0f - JumpTime / MaxJumpTime);
+					myBody.velocity = vel;
+				}
+			} else {
+				this.JumpActive = false;
+				this.JumpTime = 0;
+			}
+		}
+
+		if(this.isGrounded) {
+			animator.SetBool ("jump", false);
+		} else {
+			animator.SetBool ("jump", true);
+		}
+
 	}
+
 }

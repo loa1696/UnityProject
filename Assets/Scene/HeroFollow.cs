@@ -1,16 +1,20 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using System.Collections;
 
-public class HeroFollow : MonoBehaviour {
+public class HeroFollow : MonoBehaviour{
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
+public HeroRabbit rabit;
+
+
 	// Update is called once per frame
-	void Update () {
-		
+	void Update ()
+	{
+		Transform rabit_transform = rabit.transform;
+		Transform camera_transform = this.transform;
+		Vector3 rabit_position = rabit_transform.position;
+		Vector3 camera_position = camera_transform.position;
+		camera_position.x = rabit_position.x;
+		camera_position.y = rabit_position.y;
+		camera_transform.position = camera_position;
 	}
 }

@@ -2,15 +2,23 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NewBehaviourScript : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
-		
+public class LevelController : MonoBehaviour {
+
+	public int lives = 3;
+	public static LevelController current;
+	Vector3 startingPosition;
+
+	void Awake() {
+		current = this;
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		
+
+	public void setStartPosition(Vector3 pos) {
+		this.startingPosition = pos;
+	}
+
+	public void onRabitDeath(HeroRabbit rabit) {
+		//При смерті кролика повертаємо на початкову позицію
+		rabit.transform.position = this.startingPosition;
 	}
 }
