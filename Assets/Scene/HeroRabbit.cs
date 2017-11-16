@@ -24,6 +24,12 @@ public class HeroRabbit : MonoBehaviour {
 	bool isDead = false;
 
 
+	public static HeroRabbit lastRabit = null;
+
+	void Awake() {
+		lastRabit = this;
+	}
+
 		void Start () {
 		this.heroParent = this.transform.parent;
 			myBody = this.GetComponent<Rigidbody2D> (); 
@@ -105,7 +111,6 @@ public class HeroRabbit : MonoBehaviour {
 				animator.SetBool ("jump", true);
 			}
 
-		Debug.Log (hit);
 		if(hit) {
 			isGrounded = true;
 			if(hit.transform != null && hit.transform.GetComponent<MovingPlatform>() != null){
@@ -116,7 +121,12 @@ public class HeroRabbit : MonoBehaviour {
 			isGrounded = false;
 			setNewParent (heroParent);
 		}
+		if (isDead) {
+			LevelController.current.onRabitDeath (this);
+			isDead = false;
+			animator.SetBool ("die", false);
 
+		}
 		}
 	void setNewParent(Transform newParent) {
 		if (this.transform.parent != newParent) {
@@ -153,5 +163,12 @@ public class HeroRabbit : MonoBehaviour {
 			animator.SetBool ("die", true);
 
 		isDead = true;
+	}
+	public bool isBigRabit () {
+		return isBig;
+	}
+
+	public bool isDeadRabit () {
+		return isDead;
 	}
 }
